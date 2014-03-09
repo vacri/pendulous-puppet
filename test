@@ -1,0 +1,7 @@
+#!/bin/sh
+
+sleep 1 # git pull && ./test = hang half the time, sleep seems to stop this
+
+#sudo puppet apply --noop manifests/`hostname`.pp --modulepath ./modules
+sudo puppet apply --noop manifests/site.pp --modulepath ./modules
+

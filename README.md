@@ -14,7 +14,7 @@ __NOTE__ A cloudatcost 'reimage' assigns you a new static IP address and initial
 1. Consider reinstalling using the 'netboot' image - see below list
 1. Change /etc/apt/sources.list to something other than the clouadatcost defaults (the 'non-us' one doesn't even resolve).
 1. aptitude update
-1. aptitude install git  puppet
+1. aptitude install git puppet
 1. git clone https://github.com/vacri/pendulous-puppet.git
 1. edit network interface in puppet to match new IP address from reimaging 
 1. cd pendulous-puppet && ./test && ./apply

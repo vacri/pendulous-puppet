@@ -1,3 +1,3 @@
 #!/bin/sh
-#sudo puppet apply manifests/`hostname`.pp --modulepath ./modules
-sudo puppet apply manifests/site.pp --modulepath ./modules
+#puppet apply manifests/`hostname`.pp --modulepath ./modules
+puppet apply manifests/site.pp --modulepath ./modules

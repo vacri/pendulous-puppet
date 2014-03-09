@@ -1,0 +1,60 @@
+#!/bin/bash
+
+NEWNAME="$1"
+NEWDOMAIN=".equipment"
+
+
+if [ "$1" == "" ]; then
+	echo "Usage: $0 [desired hostname]"
+	echo " Must be run as root or with sudo"
+	echo
+	exit 0
+elif [ ! -z "${NEWNAME//[a-zA-Z0-9]}" ]; then
+    echo "Hostname '$NEWNAME' denied - alphanumeric only, please"
+    exit 1
+elif [ "$(whoami)" != "root" ]; then
+	echo "Script run as '$(whoami)', please run as root or with sudo"
+	exit 1
+fi
+
+
+errCheck () {
+    # check if the previous command returned non 0 exit code and abort
+    if [ $? != 0 ]; then
+        echo "!! $0 failed with error: $1"
+        exit 1
+    fi
+}
+
+
+echo -e "Please confirm \e[31mimmediate change\e[0m of current hostname from '$HOSTNAME' to '$NEWNAME' (y/n)"
+read NAMECHANGE
+case $NAMECHANGE in
+	"y" )
+		echo $NEWNAME > /etc/hostname
+		errCheck "Failed to set /etc/hostname"
+		hostname $NEWNAME
+		errCheck "Failed to set current hostname"
+		#check existing hostname in hosts (assumes debian-standard of 127.0.1.1)
+		if grep -q "^127.0.1.1" /etc/hosts ; then
+			sed -i -e "s/^127.0.1.1.*$/127.0.1.1 $NEWNAME$NEWDOMAIN $NEWNAME/" /etc/hosts
+			errCheck "Failed to change to new hostname $NEWNAME at 127.0.1.1 in /etc/hosts"
+		else
+			#the 'a' is for 'append line after match' - it's meant to be there
+			sed -i "/^127.0.0.1.*/a127.0.1.1 $NEWNAME$NEWDOMAIN $NEWNAME" /etc/hosts
+			errCheck "Failed to add new hostname $NEWNAME at 127.0.1.1 to /etc/hosts"
+		fi
+		HOSTNAME=$(hostname)
+		echo -e "\e[36mDone. Confirm hostname changes have stuck in below entries\e[0m"
+		echo "(prompt will not update until relog, and last two lines should match)"
+		echo -n "     Current hostname: " && bash -c hostname
+		echo -n "            \$HOSTNAME: " && echo $HOSTNAME
+		echo -n "        /etc/hostname: " && cat /etc/hostname
+		echo -n "   /etc/hosts (by IP): " && grep "^127.0.1.1" /etc/hosts
+		echo -n " /etc/hosts (by name): " && grep "$NEWNAME" /etc/hosts
+		;;
+	* )
+		echo "User unenthusiastic about hostname change, aborting..."
+		exit 2;;
+esac
+

@@ -15,7 +15,7 @@ node base {
 	#include admins
 
 	#packages packages packages
-	$base_packages = [ 'sudo', 'git', 'screen', 'htop', 'iotop', 'iftop', 'vim', 'curl', 'mutt', 'mailutils' ]
+	$base_packages = [ 'sudo', 'git', 'screen', 'htop', 'iotop', 'iftop', 'vim', 'curl', 'mutt', 'mailutils', 'fail2ban' ]
 
 	package { $base_packages: ensure => latest }
 

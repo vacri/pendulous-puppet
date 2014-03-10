@@ -1,4 +1,4 @@
-node penny inherits base {
+node penny inherits cac_base {
 
 
 }

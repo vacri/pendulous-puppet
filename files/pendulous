@@ -1,0 +1,29 @@
+upstream delugeWeb {
+	server 127.0.0.1:8112;
+}
+
+server {
+	listen 80 default_server;
+	server_name pendulous.equipment;
+
+	location /deluge {
+
+		auth_basic "Enpendulation!";
+		auth_basic_user_file /etc/nginx/conf.d/pend.htaccess;
+
+		rewrite ^/deluge/(.*)$ /$1 break;
+
+		proxy_pass http://delugeWeb;
+		proxy_set_header Host $host;
+		proxy_set_header X-Real-IP $remote_addr;
+		proxy_set_header X-Deluge-Base   "/deluge";
+		proxy_redirect off;
+		proxy_buffering off;
+	}
+
+	location / {
+		root /var/www;
+	}
+}
+
+

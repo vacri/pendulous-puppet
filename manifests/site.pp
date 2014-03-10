@@ -8,13 +8,14 @@ Exec { path => '/usr/bin:/bin:/usr/sbin:/sbin' }
 
 import "hosts/*.pp"
 #import "users/*.pp"
+import "concat"
 
 node base {
-
+	
 	#include admins
 
 	#packages packages packages
-	$base_packages = [ 'sudo', 'git', 'nginx', 'screen', 'htop', 'iotop', 'iftop', 'vim', 'curl', 'mutt', 'mailutils' ]
+	$base_packages = [ 'sudo', 'git', 'screen', 'htop', 'iotop', 'iftop', 'vim', 'curl', 'mutt', 'mailutils' ]
 
 	package { $base_packages: ensure => latest }
 
